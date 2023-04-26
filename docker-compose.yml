@@ -1,0 +1,11 @@
+version: '3'
+services:
+  soldat2:
+    build: .
+    ports:
+      - "33073:33073"
+      - "33074:33074"
+    environment:
+      - RCON_PASSWORD=${RCON_PASSWORD}
+      - SERVER_NAME=${SERVER_NAME}
+      - SERVER_GREET_MESSAGE=${SERVER_GREET_MESSAGE}
