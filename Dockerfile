@@ -8,10 +8,8 @@ RUN apt-get -y --force-yes install wget unzip
 RUN echo "Installing soldat 2 server"
 RUN mkdir soldat2
 
-# RUN wget "https://dl.thd.vg/soldat2-linuxserver-release.tar.gz"
-COPY soldat2-linuxserver-release.tar.gz .
+RUN wget "https://dl.thd.vg/soldat2-linuxserver-release.tar.gz"
 RUN tar -xf soldat2-linuxserver-release.tar.gz
-RUN ls
 RUN cp -r soldat2-linuxserver-release/* soldat2
 
 RUN echo "Copying configuration"

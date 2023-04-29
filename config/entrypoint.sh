@@ -1,11 +1,6 @@
 #!/bin/bash
 
-# set -e
-
 cd soldat2
-
-# chmod -R 0777 Logs
-# chmod -R u+w ./Logs/
 
 sed -i "s|RCON_PASSWORD|${RCON_PASSWORD}|g" autoconfig.ini
 sed -i "s|SERVER_NAME|${SERVER_NAME}|g" autoconfig.ini
