@@ -24,3 +24,6 @@ RUN echo "Running server"
 RUN ["chmod", "+x", "/soldat2/entrypoint.sh"]
 ENTRYPOINT [ "/soldat2/entrypoint.sh" ]
 CMD ["./soldat2"]
+
+# move workdir to /opt
+# use debian base image
