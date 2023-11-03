@@ -20,6 +20,11 @@ RUN useradd -ms /bin/bash soldatusr
 RUN chown -R soldatusr:soldatusr /soldat2
 USER soldatusr
 
+# Game Port
+EXPOSE 33073
+# RCON Port
+EXPOSE 33074 
+
 RUN echo "Running server"
 RUN ["chmod", "+x", "/soldat2/entrypoint.sh"]
 ENTRYPOINT [ "/soldat2/entrypoint.sh" ]
