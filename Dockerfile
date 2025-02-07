@@ -1,34 +1,47 @@
-FROM debian:bullseye-slim
+FROM ghcr.io/t4lan/debian-mini-base:latest
 LABEL maintainer="m@matiargs.com"
 
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get -y --force-yes install wget unzip
+ARG DEBIAN_FRONTEND="noninteractive"
 
-RUN echo "Installing soldat 2 server"
-RUN mkdir soldat2
+ENV PUID=1000 \
+    USER=soldat2 \
+    GAMEDIR=/opt/soldat2 \
+    TOOLSDIR=/etc/soldat2 \
+    LANGUAGE="en_US.UTF-8" \
+    LANG="en_US.UTF-8" \
+    TERM="xterm" 
 
-RUN wget "https://dl.thd.vg/soldat2-linuxserver-release.tar.gz"
-RUN tar -xf soldat2-linuxserver-release.tar.gz
-RUN cp -r soldat2-linuxserver-release/* soldat2
+RUN export LC_ALL=${LANGUAGE}
+RUN export LANG=${LANG}
 
-RUN echo "Copying configuration"
-ADD ./config/ /soldat2/
+RUN apt-get update && \
+    apt-get -y upgrade && \
+    apt-get -y install wget unzip ca-certificates locales && \
+    dpkg-reconfigure locales && \
+    rm -rf /var/lib/apt/lists/* && \
+    useradd -u "${PUID}" -m "${USER}" && \
+    mkdir -p "${GAMEDIR}" "${TOOLSDIR}"
+    
+RUN wget -P ${TOOLSDIR} "https://dl.thd.vg/soldat2-linuxserver-release.tar.gz"
 
-# add user soldat
-RUN useradd -ms /bin/bash soldatusr
-RUN chown -R soldatusr:soldatusr /soldat2
-USER soldatusr
+# entrypoint is copied in another directory from the bind mount
+COPY etc/entrypoint.sh "${TOOLSDIR}/entrypoint.sh" 
+COPY etc/autoconfig.ini "${TOOLSDIR}/autoconfig.ini"
 
 # Game Port
 EXPOSE 33073
 # RCON Port
-EXPOSE 33074 
+EXPOSE 33074
 
-RUN echo "Running server"
-RUN ["chmod", "+x", "/soldat2/entrypoint.sh"]
-ENTRYPOINT [ "/soldat2/entrypoint.sh" ]
+RUN set -x \
+        && chown -R "${USER}:${USER}" "${TOOLSDIR}" "${GAMEDIR}" \
+        && chmod +x "${TOOLSDIR}/entrypoint.sh"
+
+# Switch to user
+USER ${USER}
+
+# Switch workdir
+WORKDIR ${GAMEDIR}
+
+ENTRYPOINT ["/etc/soldat2/entrypoint.sh"]
 CMD ["./soldat2"]
-
-# move workdir to /opt
-# use debian base image

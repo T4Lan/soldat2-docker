@@ -19,5 +19,5 @@ sed -i -e "s|RCON_PASSWORD|${RCON_PASSWORD}|g" \
         -e "s|NET_DEBUG|${NET_DEBUG}|g" \
         "${GAMEDIR}"/autoconfig.ini
 
-echo "Running server"
+echo "Running Soldat 2 Server"
 exec "$@"
